@@ -4,6 +4,10 @@ services:
     autoconfigure: true
     public: false
 
-  WebCapsule\Bundle\DiscordWebhooks:
+  WebCapsule\Bundle\DiscordWebhooks\:
     resource: '../../*'
     exclude: '../../{Entity,Tests,Resources}'
+
+  WebCapsule\Bundle\DiscordWebhooks\Client\WebhookClient:
+    abstract: true
+    arguments: [null, null]
