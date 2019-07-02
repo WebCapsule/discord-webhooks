@@ -2,6 +2,8 @@
 
 namespace WebCapsule\Bundle\DiscordWebhooks\Client;
 
+use GuzzleHttp\Client;
+
 /**
  * Class WebhookClient
  * @package WebCapsule\Bundle\DiscordWebhooks\Client
@@ -12,27 +14,31 @@ class WebhookClient
 	 * @var string $url
 	 */
 	protected $url;
+
 	/**
 	 * @var string $username
 	 */
 	protected $username;
+
 	/**
 	 * @var string $avatar
 	 */
 	protected $avatar;
+
 	/**
 	 * @var string $message
 	 */
 	protected $message;
+
 	/**
 	 * @var array $embeds
 	 */
 	protected $embeds;
+
 	/**
 	 * @var bool $tts
 	 */
 	protected $tts;
-
 
 	/**
 	 * WebhookClient constructor.
@@ -129,9 +135,9 @@ class WebhookClient
 	 * @param WebhookEmbed $embeds
 	 * @return WebhookClient
 	 */
-	public function setEmbeds(WebhookEmbed $embeds)
+	public function setEmbeds(WebhookEmbed $embed)
 	{
-		$this->embeds[] = $embeds->toArray();
+		$this->embeds[] = $embed->toArray();
 		return $this;
 	}
 
@@ -153,7 +159,24 @@ class WebhookClient
 		return $this;
 	}
 
-	public function send(){
+	public function send()
+	{
+		$payload =
+			[
+				'headers' =>
+					[
+						'Content-Type' => 'application/json'
+					],
+				'json' => [
+					'content' => $this->message,
+					'username' => $this->username,
+					'avatar_url' => $this->avatar,
+					'tts' => $this->tts,
+					'embeds' => $this->embeds,
+				]
+			];
 
+		$client = new Client();
+		$client->request('POST', $this->url, $payload);
 	}
 }
